@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+    http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+    <http pattern="/**/*.css" security="none"/>
+    <http pattern="/**/*.img" security="none"/>
+    <http pattern="/**/*.js" security="none"/>
+    <http pattern="/**/*.plugins" security="none"/>
+
+    <!--Spring EL 표현식-->
+    <!--(1) hasRole([ROLE])-->
+    <!--(2) hasAnyRole([ROLE1, ROLE2])-->
+    <!--(3) principle-->
+    <!--(4) authentication-->
+    <!--(5) permitAll-->
+    <!--(6) isAnonymous()-->
+    <!--(7) isRememberMe()-->
+    <!--(8) isAuthenticated()-->
+    <!--(9) isFullAuthenticated()-->
+
+    <http auto-config="true">
+        <intercept-url pattern="/**" access="permitAll"/>
+        <intercept-url pattern="/shop-ui-login" access="hasRole('ROLE_ANONYMOUS')"/>
+        <intercept-url pattern="/login_duplicate" access="hasRole('ROLE_ANONYMOUS')"/>
+        <!--이즈 오우덴티케이티드 쓰면 홈 메인이 깨져나옴! <intercept-url pattern="/**" access="isAuthenticated()"/>-->
+
+        <form-login login-page="/shop-ui-login"
+        username-parameter="id"
+        password-parameter="pw"
+        login-processing-url="loginProcess"
+                    default-target-url="/login_success"
+                    authentication-failure-url="/shop-ui-login"
+                    always-use-default-target="true"
+        />
+
+        <session-management>
+            <concurrency-control max-sessions="1" expired-url="/login_duplicate"
+            error-if-maximum-exceeded="true"
+            />
+        </session-management>
+
+        <!--<http auto-config="true" use-expressions="true">-->
+        <!--&lt;!&ndash; use-expressions의 기본값은? true&ndash;&gt;-->
+        <!--<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>-->
+        <!--&lt;!&ndash;<intercept-url pattern="/user/login" access="isAnonymous()"/>&ndash;&gt;-->
+        <!--<intercept-url pattern="/user/login" access="hasRole('ROLE_ANONYMOUS')"/>-->
+        <!--<intercept-url pattern="/" access="permitAll"/>-->
+        <!--<intercept-url pattern="/**" access="permitAll"/>-->
+        <!--<intercept-url pattern="/**" access="hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')"/>-->
+
+
+
+        <!--<form-login login-page="/shop-ui-login"-->
+                    <!--username-parameter="id"-->
+                    <!--password-parameter="pw"-->
+                    <!--default-target-url="/"-->
+                    <!--authentication-failure-url="/shop-ui-login?fail=1"-->
+                    <!--always-use-default-target="true"-->
+        <!--/>-->
+
+        <!--<csrf disabled="true"></csrf>-->
+
+    </http>
+
+
+    <!--<authentication-manager>-->
+        <!--<authentication-provider>-->
+            <!--<user-service>-->
+                <!--<user name="user1" password="1111" authorities="ROLE_USER"/>-->
+                <!--&lt;!&ndash;<user name="user2" password="2222" authorities="ROLE_ADMIN"/>&ndash;&gt;-->
+
+            <!--</user-service>-->
+        <!--</authentication-provider>-->
+    <!--</authentication-manager>-->
+
+    <!--사용자 정의 인증 처리-->
+    <beans:bean id="CustomAuthenticationProvider"
+                class="org.zerock.controller.CustomAuthenticationProvider"/>
+
+    <authentication-manager>
+        <authentication-provider ref="CustomAuthenticationProvider"></authentication-provider>
+    </authentication-manager>
+
+
+</beans:beans>
+
+
+        <!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+       <!--xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+       <!--xmlns:security="http://www.springframework.org/schema/security"-->
+       <!--xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd-->
+    <!--http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd-->
+    <!--http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd-->
+    <!--http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd-->
+    <!--http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd-->
+    <!--http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd-->
+    <!--http://www.springframework.org/schema/security-->
+    <!--http://www.springframework.org/schema/security/spring-security-4.2.xsd">-->
+
+
+<!--<security:http auto-config="true" use-expressions="false">-->
+    <!--<security:intercept-url pattern="/**" access="ROLE_USER"/>-->
+
+<!--</security:http>-->
+
+<!--<security:authentication-manager>-->
+    <!--<security:authentication-provider>-->
+        <!--<security:user-service>-->
+            <!--<security:user name="user1" password="1111" authorities="ROLE_USER"/>-->
+
+
+        <!--</security:user-service>-->
+    <!--</security:authentication-provider>-->
+<!--</security:authentication-manager>-->
+
+<!--</beans>-->
+
+security-context.xml

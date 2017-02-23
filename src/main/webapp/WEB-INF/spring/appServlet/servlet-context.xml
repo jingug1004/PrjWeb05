@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:mvc="http://www.springframework.org/schema/mvc"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+
+    <mvc:view-controller path="/home" view-name="home"/>
+    <!-- [path=] /home이라는 이름으로 리턴해서 넘기면 [view-name=] home.jsp로 이동을 시킬 것이다!
+       xmlns:mvc="http://www.springframework.org/schema/mvc" 네임스페이스 추가했다.
+       http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd"> 이것도 추가했다. -->
+
+    <!-- URL 매핑 -->
+    <mvc:view-controller path="/admin/admin" view-name="admin/admin"/>
+    <mvc:view-controller path="/contents" view-name="contents"/>
+
+    <annotation-driven/>
+
+    <!-- Enables the Spring MVC @Controller programming model -->
+    <beans:bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+    <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="prefix" value="/WEB-INF/views/"/>
+        <beans:property name="suffix" value=".jsp"/>
+    </beans:bean>
+
+    <resources mapping="/resources/**" location="/resources/"/>
+
+    <!--
+    테스트 해봤음. 그러나.. ㅠ_ㅠ
+    <resources mapping="/css/**" location="/css/" />
+    <resources mapping="/fonts/**" location="/fonts/" />
+    <resources mapping="/img/**" location="/img/" />
+    <resources mapping="/js/**" location="/js/" />
+    <resources mapping="/php/**" location="/php/" />
+    <resources mapping="/plugins/**" location="/plugins/" />
+    -->
+
+    <!--이건 됨. 맨 위의 것은 안 됨!-->
+    <resources location="/WEB-INF/views/assets/css/" mapping="assets/css/**" />
+    <!--<resources location="/WEB-INF/views/assets/fonts/" mapping="assets/fonts/**" />-->
+    <resources location="/WEB-INF/views/assets/img/" mapping="assets/img/**" />
+    <resources location="/WEB-INF/views/assets/js/" mapping="assets/js/**" />
+    <!--<resources location="/WEB-INF/views/assets/php/" mapping="assets/php/**" />-->
+    <resources location="/WEB-INF/views/assets/plugins/" mapping="assets/plugins/**" />
+
+    <!--
+    이것도 됨. 맨 위의 것은 안 됨!
+    <resources location="/WEB-INF/views/assets/css/, classpath=/WEB-INF/views/assets/css/" mapping="assets/css/**" />
+    <resources location="/WEB-INF/views/assets/fonts/, classpath=/WEB-INF/views/assets/fonts/" mapping="assets/fonts/**" />
+    <resources location="/WEB-INF/views/assets/img/, classpath=/WEB-INF/views/assets/img/" mapping="assets/img/**" />
+    <resources location="/WEB-INF/views/assets/js/, classpath=/WEB-INF/views/assets/js/" mapping="assets/js/**" />
+    <resources location="/WEB-INF/views/assets/php/, classpath=/WEB-INF/views/assets/php/" mapping="assets/php/**" />
+    <resources location="/WEB-INF/views/assets/plugins/, classpath=/WEB-INF/views/assets/plugins/" mapping="assets/plugins/**" />
+    -->
+
+    <context:component-scan base-package="org.zerock.controller"/>
+    <!--
+    WARN : org.springframework.web.servlet.PageNotFound - No mapping found for HTTP request with URI [/board/success]
+    in DispatcherServlet with name 'appServlet'
+    [원인] : 해당 URL이 정의되어 있는 @Controller가 component-scan의 대상이 아니어서 spring bean으로 등록되지 않는 경우
+    [해결 방법] :
+    <context:component-scan base-package="org.zerock.web"/>
+    마지막 3레벨의 패키지 경로를 web 패키지를 controller 패키지로 정정
+    <context:component-scan /> 상의 base-package 상에 해당 @Controller가 소속되어 있는 패키지가 지정되어 있는지 확인해 보십시오.
+    -->
+
+    <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <beans:property name="maxUploadSize" value="10485760"></beans:property>
+    </beans:bean>
+
+    <beans:bean id="uploadPath" class="java.lang.String">
+        <beans:constructor-arg value="C:\\zzz\\upload"></beans:constructor-arg>
+    </beans:bean>
+
+
+</beans:beans>
